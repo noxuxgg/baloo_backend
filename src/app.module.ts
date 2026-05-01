@@ -5,6 +5,12 @@ import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { InventarioModule } from './modules/admin/inventario/inventario.module';
+import { UsuariosModule } from './modules/admin/usuarios/usuarios.module';
+import { RolesModule } from './modules/admin/roles/roles.module';
+import { SucursalesModule } from './modules/admin/sucursales/sucursales.module';
+import { ReportesModule } from './modules/admin/reportes/reportes.module';
+import { GastosModule } from './modules/operacion/gastos/gastos.module';
+import { IngresosDiariosModule } from './modules/operacion/ingresos-diarios/ingresos-diarios.module';
 
 @Module({
   imports: [ConfigModule.forRoot(),
@@ -21,7 +27,13 @@ import { InventarioModule } from './modules/admin/inventario/inventario.module';
       synchronize: false
     }),
     UsersModule,
-    InventarioModule],
+    InventarioModule,
+    UsuariosModule,
+    RolesModule,
+    SucursalesModule,
+    ReportesModule,
+    GastosModule,
+    IngresosDiariosModule],
   controllers: [AppController],
   providers: [AppService],
 })
