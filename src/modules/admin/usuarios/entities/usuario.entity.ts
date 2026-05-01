@@ -27,12 +27,12 @@ export class Usuario {
     })
     roles: Role[];
 
-    @OneToMany(() => Reporte, (reporte) => reporte.usuario)
+    @OneToMany(() => Reporte, (reporte) => reporte.usuario, {eager: true})
     reporte: Reporte[]
 
-    @OneToMany(() => IngresosDiario, (ingreso) => ingreso.usuario)
+    @OneToMany(() => IngresosDiario, (ingreso) => ingreso.usuario, {eager: true})
     ingresos: IngresosDiario[]
 
-    @OneToMany(() => Gasto, (gasto) => gasto.usuario)
+    @OneToMany(() => Gasto, (gasto) => gasto.usuario, {eager: true})
     gastos: Gasto[]
 }
