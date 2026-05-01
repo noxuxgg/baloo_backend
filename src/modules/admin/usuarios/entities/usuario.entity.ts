@@ -11,10 +11,10 @@ export class Usuario {
     id: number;
 
     @Column({unique: true})
-    username: string;
+    nombreUsuario: string;
 
     @Column()
-    password: string;
+    contrasenia: string;
 
     @Column({default: true})
     estado: boolean;
