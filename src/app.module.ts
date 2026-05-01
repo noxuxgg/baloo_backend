@@ -11,6 +11,7 @@ import { SucursalesModule } from './modules/admin/sucursales/sucursales.module';
 import { ReportesModule } from './modules/admin/reportes/reportes.module';
 import { GastosModule } from './modules/operacion/gastos/gastos.module';
 import { IngresosDiariosModule } from './modules/operacion/ingresos-diarios/ingresos-diarios.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [ConfigModule.forRoot(),
@@ -33,7 +34,8 @@ import { IngresosDiariosModule } from './modules/operacion/ingresos-diarios/ingr
     SucursalesModule,
     ReportesModule,
     GastosModule,
-    IngresosDiariosModule],
+    IngresosDiariosModule,
+    AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })
