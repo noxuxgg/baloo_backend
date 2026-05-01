@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { UsersModule } from './modules/users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { InventarioModule } from './modules/admin/inventario/inventario.module';
 
 @Module({
   imports: [ConfigModule.forRoot(),
@@ -19,7 +20,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       ],
       synchronize: false
     }),
-    UsersModule],
+    UsersModule,
+    InventarioModule],
   controllers: [AppController],
   providers: [AppService],
 })
