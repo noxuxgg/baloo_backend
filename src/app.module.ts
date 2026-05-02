@@ -12,6 +12,7 @@ import { ReportesModule } from './modules/admin/reportes/reportes.module';
 import { GastosModule } from './modules/operacion/gastos/gastos.module';
 import { IngresosDiariosModule } from './modules/operacion/ingresos-diarios/ingresos-diarios.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { VentasModule } from './modules/admin/ventas/ventas.module';
 
 @Module({
   imports: [ConfigModule.forRoot(),
@@ -35,7 +36,8 @@ import { AuthModule } from './modules/auth/auth.module';
     ReportesModule,
     GastosModule,
     IngresosDiariosModule,
-    AuthModule],
+    AuthModule,
+    VentasModule],
   controllers: [AppController],
   providers: [AppService],
 })
