@@ -16,6 +16,7 @@ async function bootstrap() {
   .setDescription("Backend para la aplicación de repostería Baloo")
   .setVersion("1.0")
   .addTag("Backend Nest")
+  .addBearerAuth()
   .build();
 
   const documentFactory = () => SwaggerModule.createDocument(app, config);

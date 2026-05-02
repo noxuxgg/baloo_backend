@@ -7,6 +7,6 @@ export class inicioSesionDto{
     nombreUsuario: string;
     
     @MinLength(6)
-    @MaxLength(30)
+    @MaxLength(255)
     contrasenia: string;
 }

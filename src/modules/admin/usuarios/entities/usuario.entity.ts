@@ -7,8 +7,8 @@ import { Gasto } from "../../../operacion/gastos/entities/gasto.entity";
 @Entity('usuarios')
 export class Usuario {
     
-    @PrimaryGeneratedColumn()
-    id: number;
+    @PrimaryGeneratedColumn('uuid')
+    id: string;
 
     @Column({unique: true})
     nombreUsuario: string;
