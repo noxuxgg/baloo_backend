@@ -37,19 +37,38 @@ export class ReportesService {
   }
 
   async findOne(id: number) {
-    const reporte = await this.reporteRepository.findOneBy({id: id});
-    if(!reporte){
+    const reporte = await this.reporteRepository.findOneBy({ id: id });
+    if (!reporte) {
       throw new NotFoundException(`El reporte con el ID ${id} NO fue encontrado`);
     }
     return reporte;
   }
 
-  update(id: number, updateReporteDto: UpdateReporteDto) {
-    const reporte = this.findOne(id);
-    return `This action updates a #${id} reporte`;
+  async update(id: number, updateReporteDto: UpdateReporteDto) {
+    const reporte = await this.reporteRepository.findOne({
+      where: { id },
+      relations: ['usuario']
+    });
+
+    if (!reporte) {
+      throw new NotFoundException(`El reporte con ID ${id} no existe`);
+    }
+    if (updateReporteDto.usuarioId) {
+      const usuarioExistente = await this.usuarioRepository.findOneBy({ id: updateReporteDto.usuarioId });
+
+      if (!usuarioExistente) {
+        throw new NotFoundException(`El usuario con ID ${updateReporteDto.usuarioId} no existe`);
+      }
+      reporte.usuario = usuarioExistente;
+    }
+    Object.assign(reporte, updateReporteDto);
+    return await this.reporteRepository.save(reporte);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} reporte`;
+  async remove(id: number) {
+    const reporte = await this.findOne(id);
+    const identificador = reporte.id;
+    await this.reporteRepository.delete(reporte)
+    return {message: `El reporte con identificador ${identificador} ha sido eliminado`};
   }
 }
