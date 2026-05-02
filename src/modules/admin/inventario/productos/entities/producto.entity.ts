@@ -1,0 +1,24 @@
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Categoria } from '../../categorias/entities/categoria.entity';
+import { Stock } from '../../stock/entities/stock.entity';
+
+@Entity('productos')
+export class Producto {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  nombre: string;
+
+  @Column('decimal', { precision: 10, scale: 2 })
+  precio: number;
+
+  @Column({ default: true })
+  estado: boolean;
+
+  @ManyToOne(() => Categoria, (categoria) => categoria.productos)
+  categoria: Categoria;
+
+  @OneToMany(() => Stock, (stock) => stock.producto)
+  stocks: Stock[];
+}
