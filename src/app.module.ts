@@ -13,6 +13,7 @@ import { GastosModule } from './modules/operacion/gastos/gastos.module';
 import { IngresosDiariosModule } from './modules/operacion/ingresos-diarios/ingresos-diarios.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { VentasRootModule } from './modules/admin/ventas/ventas.module';
+import { EncargosModule } from './modules/admin/encargos/encargos.module';
 
 @Module({
   imports: [ConfigModule.forRoot(),
@@ -37,7 +38,8 @@ import { VentasRootModule } from './modules/admin/ventas/ventas.module';
     GastosModule,
     IngresosDiariosModule,
     AuthModule,
-    VentasRootModule],
+    VentasRootModule,
+    EncargosModule],
   controllers: [AppController],
   providers: [AppService],
 })
