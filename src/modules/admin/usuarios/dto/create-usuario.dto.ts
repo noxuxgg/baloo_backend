@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, MaxLength, MinLength } from "class-validator";
+import { IsArray, IsOptional, IsString, MaxLength, MinLength } from "class-validator";
 
 export class CreateUsuarioDto {
 
@@ -15,4 +15,8 @@ export class CreateUsuarioDto {
     @MaxLength(255)
     contrasenia: string;
 
+    @ApiProperty()
+    @IsOptional()
+    @IsArray()
+    roleIds?: number[]
 }

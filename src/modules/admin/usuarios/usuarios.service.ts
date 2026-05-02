@@ -3,30 +3,44 @@ import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Usuario } from './entities/usuario.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import * as bcrypt from 'bcrypt'
+import { Role } from '../roles/entities/role.entity';
 
 @Injectable()
 export class UsuariosService {
 
-  constructor(@InjectRepository(Usuario) private usuarioRepository: Repository<Usuario>) {
-
-  }
+  constructor(
+    @InjectRepository(Usuario) 
+    private usuarioRepository: Repository<Usuario>,
+    @InjectRepository(Role)
+    private rolRepository: Repository<Role>
+  ) {}
 
   async create(createUsuarioDto: CreateUsuarioDto) {
-    const { nombreUsuario } = createUsuarioDto;
+    const { nombreUsuario, roleIds } = createUsuarioDto;
     // Verificando si existe el nombre de Usuario
     const existeUsuario = await this.usuarioRepository.findOne({ where: { nombreUsuario: nombreUsuario } });
     if (existeUsuario) {
       throw new BadRequestException(`El nombre de usuario ${nombreUsuario} ya está en uso`);
     }
+    // Roles
+    let roles: Role[] = [];
+    if(roleIds?.length){
+      roles = await this.rolRepository.find({where: {id: In(roleIds)}});
+      if(roles.length !== roleIds.length){
+        throw new BadRequestException('Uno o más roles no son válidos');
+      }
+    }
+
     // Encriptación de contrasenia
     const hashPassword = await bcrypt.hash(createUsuarioDto.contrasenia, 12);
 
     const nuevoUsuario = this.usuarioRepository.create({
       nombreUsuario,
-      contrasenia: hashPassword
+      contrasenia: hashPassword,
+      roles
     });
     await this.usuarioRepository.save(nuevoUsuario);
     const { contrasenia, ...restoDatos } = nuevoUsuario;
@@ -48,6 +62,11 @@ export class UsuariosService {
 
   async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
     const usuario = await this.findOne(id);
+
+    if (updateUsuarioDto.roleIds) {
+      usuario.roles = updateUsuarioDto.roleIds.map(id => ({ id } as any));
+    }
+
     Object.assign(usuario, updateUsuarioDto);
     if (updateUsuarioDto.contrasenia) {
       usuario.contrasenia = await bcrypt.hash(updateUsuarioDto.contrasenia, 12);
