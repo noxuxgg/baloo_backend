@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { VentasModule } from './ventas/ventas.module';
+import { VentasModul } from './ventas/ventas.module';
 import { DetalleVentaModule } from './detalle-venta/detalle-venta.module';
 import { PagosModule } from './pagos/pagos.module';
 
