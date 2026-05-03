@@ -8,13 +8,20 @@ export class DetalleVenta {
   @PrimaryGeneratedColumn()
   id: number;
 
-  // Relación con venta
+  // claves directas (IMPORTANTE)
+  @Column()
+  venta_id: number;
+
+  @Column()
+  producto_id: number;
+
+  // relación con venta
   @ManyToOne(() => Venta, (venta) => venta.detalles)
   @JoinColumn({ name: 'venta_id' })
   venta: Venta;
 
-  // Relación con producto
-  @ManyToOne(() => Producto)
+  // relación con producto
+  @ManyToOne(() => Producto, (producto) => producto.detalles)
   @JoinColumn({ name: 'producto_id' })
   producto: Producto;
 
