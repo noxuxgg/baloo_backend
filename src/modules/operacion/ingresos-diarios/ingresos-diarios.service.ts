@@ -17,35 +17,35 @@ export class IngresosDiariosService {
     private readonly usuarioRepository: Repository<Usuario>,
     @InjectRepository(Sucursal)
     private readonly sucursalRepository: Repository<Sucursal>
-  ){}
+  ) { }
 
   async create(createIngresosDiarioDto: CreateIngresosDiarioDto) {
     const { usuarioId, sucursalId, ...datosIngreso } = createIngresosDiarioDto;
-    const usuario = await this.usuarioRepository.findOneBy({id: usuarioId});
-    const sucursal = await this.sucursalRepository.findOneBy({id: sucursalId});
-    if (!usuario){
+    const usuario = await this.usuarioRepository.findOneBy({ id: usuarioId });
+    const sucursal = await this.sucursalRepository.findOneBy({ id: sucursalId });
+    if (!usuario) {
       throw new NotFoundException(`No existe el usuario con ID: ${usuarioId}`);
     }
-    if (!sucursal){
+    if (!sucursal) {
       throw new NotFoundException(`No existe la sucursal con ID: ${sucursalId}`);
     }
-    const nuevoIngreso = await this.ingresoRepository.create({
+    const nuevoIngreso = this.ingresoRepository.create({
       ...datosIngreso,
       usuario,
       sucursal,
     });
-    const ingreso = await this.ingresoRepository.save(nuevoIngreso)
+    const ingreso = await this.ingresoRepository.save(nuevoIngreso);
     return ingreso;
   }
 
   async findAll() {
-    const ingresos = await this.ingresoRepository.find()
+    const ingresos = await this.ingresoRepository.find();
     return ingresos;
   }
 
   async findOne(id: number) {
-    const ingreso = await this.ingresoRepository.findOneBy({id: id});
-    if (!ingreso){
+    const ingreso = await this.ingresoRepository.findOneBy({ id: id });
+    if (!ingreso) {
       throw new NotFoundException(`No existe el ingreso con ID: ${id}`);
     }
     return ingreso;
@@ -77,12 +77,13 @@ export class IngresosDiariosService {
       ingreso.sucursal = sucursalExiste;
     }
     Object.assign(ingreso, updateIngresosDiarioDto);
-    return await this.ingresoRepository.save(ingreso);
+    const ingresoActualizado = await this.ingresoRepository.save(ingreso);
+    return ingresoActualizado;
   }
 
   async remove(id: number) {
-    const ingreso = await this.findOne(id);
-    await this.sucursalRepository.delete(ingreso)
-    return {message: `El ingreso con ID ${id}, ha sido`};
+    await this.findOne(id)
+    await this.ingresoRepository.delete(id)
+    return { message: `El ingreso con ID ${id}, ha sido` };
   }
 }
