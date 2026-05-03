@@ -1,6 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Usuario } from "../../../admin/usuarios/entities/usuario.entity";
 import { Sucursal } from "../../../admin/sucursales/entities/sucursale.entity";
+import { Exclude } from "class-transformer";
 
 @Entity('ingresos_diarios')
 export class IngresosDiario {
@@ -16,9 +17,9 @@ export class IngresosDiario {
     @Column({ type: 'text', nullable: true })
     observaciones: string;
 
-    @ManyToOne(() => Usuario, (usuario) => usuario.ingresos)
+    @ManyToOne(() => Usuario, (usuario) => usuario.ingresos, { eager: true})
     usuario: Usuario
 
-    @ManyToOne(() => Sucursal, (sucursal) => sucursal.ingresos)
+    @ManyToOne(() => Sucursal, (sucursal) => sucursal.ingresos, { eager: true})
     sucursal: Sucursal
 }
