@@ -12,6 +12,9 @@ export class Categoria {
   @Column({ nullable: true })
   descripcion: string;
 
-  @OneToMany(() => Producto, (producto) => producto.categoria)
+  @OneToMany(() => Producto, (producto) => producto.categoria, { eager: true })
   productos: Producto[];
+
+  @Column({ default: true }) // <--- Agrégala aquí
+  estado: boolean;
 }
