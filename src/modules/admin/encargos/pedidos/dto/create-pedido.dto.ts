@@ -8,9 +8,9 @@ export class CreatePedidoDto {
     clienteId: number;
 
     @ApiProperty({ description: 'Id que proviene de Usuario'})
-    @IsNumber()
+    @IsString()
     @IsNotEmpty()
-    usuarioId: number;
+    usuarioId: string;
 
     @ApiProperty({ description: 'Id que proviene de Sucursal'})
     @IsNumber()
