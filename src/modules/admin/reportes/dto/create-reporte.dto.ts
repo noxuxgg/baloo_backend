@@ -2,7 +2,7 @@ import { ApiProperty } from "@nestjs/swagger";
 import { IsArray, IsDateString, IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateReporteDto {
-    
+    @ApiProperty()
     @IsNotEmpty()
     @IsString()
     tipo: string;

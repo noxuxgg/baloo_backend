@@ -67,8 +67,7 @@ export class ReportesService {
 
   async remove(id: number) {
     const reporte = await this.findOne(id);
-    const identificador = reporte.id;
-    await this.reporteRepository.delete(reporte)
-    return {message: `El reporte con identificador ${identificador} ha sido eliminado`};
+    await this.reporteRepository.remove(reporte)
+    return {message: `El reporte con identificador ${id} ha sido eliminado`};
   }
 }
