@@ -4,6 +4,7 @@ import { Reporte } from "../../reportes/entities/reporte.entity";
 import { IngresosDiario } from "../../../operacion/ingresos-diarios/entities/ingresos-diario.entity";
 import { Gasto } from "../../../operacion/gastos/entities/gasto.entity";
 import { Pedido } from "../../encargos/pedidos/entities/pedido.entity";
+import { Exclude } from "class-transformer";
 
 
 @Entity('usuarios')
@@ -15,13 +16,15 @@ export class Usuario {
     @Column({unique: true})
     nombreUsuario: string;
 
+    @Exclude({ toPlainOnly: true })
     @Column()
     contrasenia: string;
 
     @Column({default: true})
     estado: boolean;
 
-    @ManyToMany(() => Role,{eager: true})
+    @Exclude({ toPlainOnly: true })
+    @ManyToMany(() => Role,{eager: false})
     @JoinTable({
         name: 'usuarioRol',
         joinColumn: {name: 'usuarioId'},
@@ -29,17 +32,20 @@ export class Usuario {
     })
     roles: Role[];
 
-    @OneToMany(() => Reporte, (reporte) => reporte.usuario, {eager: true})
-    reporte: Reporte[]
+    
+    @Exclude({ toPlainOnly: true })
+    @OneToMany(() => Reporte, (reporte) => reporte.usuario, {eager: false})
+    reporte: Reporte[];
 
-    @OneToMany(() => IngresosDiario, (ingreso) => ingreso.usuario, {eager: true})
-    ingresos: IngresosDiario[]
+    @Exclude({ toPlainOnly: true })
+    @OneToMany(() => IngresosDiario, (ingreso) => ingreso.usuario, {eager: false})
+    ingresos: IngresosDiario[];
 
-    @OneToMany(() => Gasto, (gasto) => gasto.usuario, {eager: true})
-    gastos: Gasto[]
+    @Exclude({ toPlainOnly: true })
+    @OneToMany(() => Gasto, (gasto) => gasto.usuario, {eager: false})
+    gastos: Gasto[];
 
-    @OneToMany(() => Pedido, (pedido) => pedido.usuario, {eager: true})
-    pedidos: Pedido[]
-
-
+    @Exclude({ toPlainOnly: true })
+    @OneToMany(() => Pedido, (pedido) => pedido.usuario, {eager: false})
+    pedidos: Pedido[];
 }
