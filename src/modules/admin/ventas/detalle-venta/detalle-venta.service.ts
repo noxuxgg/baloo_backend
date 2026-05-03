@@ -16,21 +16,21 @@ export class DetalleVentaService {
     private detalleRepo: Repository<DetalleVenta>,
   ) {}
 
-  // CREATE REAL
+  // CREATE
   async create(data: CreateDetalleVentaDto) {
 
-    // validar venta
+    // Validar venta
     const venta = await this.detalleRepo.manager.findOne(Venta, {
-      where: { id: data.venta_id }
+      where: { id: data.ventaId },       // 👈 camelCase
     });
 
     if (!venta) {
       throw new NotFoundException('La venta no existe');
     }
 
-    // validar producto
+    // Validar producto
     const producto = await this.detalleRepo.manager.findOne(Producto, {
-      where: { id: data.producto_id }
+      where: { id: data.productoId },    // 👈 camelCase
     });
 
     if (!producto) {
@@ -38,11 +38,11 @@ export class DetalleVentaService {
     }
 
     const detalle = this.detalleRepo.create({
-      venta: venta,
-      producto: producto,
+      venta,
+      producto,
       cantidad: data.cantidad,
-      precio_unitario: data.precio_unitario,
-      subtotal: data.subtotal
+      precioUnitario: data.precioUnitario,                    // 👈 camelCase
+      subtotal: data.cantidad * data.precioUnitario,          // 👈 camelCase
     });
 
     return this.detalleRepo.save(detalle);
@@ -63,12 +63,12 @@ export class DetalleVentaService {
     });
   }
 
-  // ✏️ UPDATE
+  // UPDATE
   update(id: number, data: UpdateDetalleVentaDto) {
     return this.detalleRepo.update(id, data);
   }
 
-  // 🗑 DELETE
+  // DELETE
   remove(id: number) {
     return this.detalleRepo.delete(id);
   }

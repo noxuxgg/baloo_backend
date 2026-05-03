@@ -4,122 +4,108 @@ import { DataSource } from 'typeorm';
 import { Venta } from './entities/venta.entity';
 import { DetalleVenta } from '../detalle-venta/entities/detalle-venta.entity';
 import { Pago } from '../pagos/entities/pago.entity';
-
 import { Usuario } from '../../usuarios/entities/usuario.entity';
 import { Sucursal } from '../../sucursales/entities/sucursale.entity';
 import { Producto } from '../../inventario/productos/entities/producto.entity';
+import { CreateVentaDto } from './dto/create-venta.dto';
+import { UpdateVentaDto } from './dto/update-venta.dto';
 
 @Injectable()
 export class VentasService {
 
-  constructor(
-    private readonly dataSource: DataSource
-  ) {}
+  constructor(private readonly dataSource: DataSource) {}
 
-  // CREAR VENTA COMPLETA
-  async create(data: any) {
+  // CREATE
+  async create(data: CreateVentaDto) {
     return await this.dataSource.transaction(async (manager) => {
 
-      // validar usuario
+      // Validar usuario
+// Validar usuario — cast a any para evitar el error de tipos
       const usuario = await manager.findOne(Usuario, {
-        where: { id: data.usuario_id }
+        where: { id: data.usuarioId as any },    //esto soluciona el error de TS
       });
 
-      if (!usuario) {
-        throw new NotFoundException('El usuario no existe');
-      }
+if (!usuario) throw new NotFoundException('El usuario no existe');
 
-      //  validar sucursal
+      // Validar sucursal
       const sucursal = await manager.findOne(Sucursal, {
-        where: { id: data.sucursal_id }
+        where: { id: data.sucursalId },         // camelCase
       });
-
-      if (!sucursal) {
-        throw new NotFoundException('La sucursal no existe');
-      }
+      if (!sucursal) throw new NotFoundException('La sucursal no existe');
 
       let total = 0;
 
-      // validar productos + calcular total
+      // Validar productos y calcular total
       for (const det of data.detalles) {
-
         const producto = await manager.findOne(Producto, {
-          where: { id: det.producto_id }
+          where: { id: det.productoId },        // camelCase
         });
-
         if (!producto) {
-          throw new NotFoundException(`Producto ${det.producto_id} no existe`);
+          throw new NotFoundException(`Producto ${det.productoId} no existe`);
         }
-
-        det.subtotal = det.cantidad * det.precio_unitario;
-        total += det.subtotal;
+        total += det.cantidad * det.precioUnitario; // camelCase
       }
 
-      // guardar venta
+      // Guardar venta
       const venta = manager.create(Venta, {
-        fecha: data.fecha,
-        usuario_id: data.usuario_id,
-        sucursal_id: data.sucursal_id,
-        total: total
+        usuarioId: data.usuarioId,              //  camelCase
+        sucursalId: data.sucursalId,            // camelCase
+        total,
       });
-
       const ventaGuardada = await manager.save(venta);
 
-      // guardar detalles
+      // Guardar detalles
       for (const det of data.detalles) {
         const detalle = manager.create(DetalleVenta, {
           venta: ventaGuardada,
-          producto: { id: det.producto_id },
+          producto: { id: det.productoId },     //camelCase
           cantidad: det.cantidad,
-          precio_unitario: det.precio_unitario,
-          subtotal: det.subtotal
+          precioUnitario: det.precioUnitario,   //camelCase
+          subtotal: det.cantidad * det.precioUnitario,
         });
-
         await manager.save(detalle);
       }
 
-      // guardar pagos
+      // Guardar pagos
       for (const p of data.pagos) {
         const pago = manager.create(Pago, {
           venta: ventaGuardada,
           metodo: p.metodo,
           monto: p.monto,
-          fecha: new Date()
         });
-
         await manager.save(pago);
       }
 
-      //  devolver completo
+      // Devolver venta completa
       return await manager.findOne(Venta, {
         where: { id: ventaGuardada.id },
-        relations: ['detalles', 'pagos']
+        relations: ['detalles', 'pagos'],
       });
     });
   }
 
-  //  LISTAR
+  // GET ALL
   findAll() {
     return this.dataSource.getRepository(Venta).find({
-      relations: ['detalles', 'pagos']
+      relations: ['detalles', 'pagos'],
     });
   }
 
-  //  UNO
+  // GET ONE
   findOne(id: number) {
     return this.dataSource.getRepository(Venta).findOne({
       where: { id },
-      relations: ['detalles', 'pagos']
+      relations: ['detalles', 'pagos'],
     });
   }
 
-  //  (opcional)
-  update(id: number, data: any) {
-    return {};
+  // UPDATE
+  update(id: number, data: UpdateVentaDto) {
+    return this.dataSource.getRepository(Venta).update(id, data);
   }
 
-  // 🗑 (opcional)
+  // DELETE
   remove(id: number) {
-    return {};
+    return this.dataSource.getRepository(Venta).delete(id);
   }
 }

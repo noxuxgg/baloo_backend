@@ -1,12 +1,12 @@
+// create-detalle-venta.dto.ts
 import { IsInt, IsNumber, Min } from 'class-validator';
 
 export class CreateDetalleVentaDto {
+  @IsInt()
+  ventaId: number;        // camelCase
 
   @IsInt()
-  venta_id: number;
-
-  @IsInt()
-  producto_id: number;
+  productoId: number;     // camelCase
 
   @IsInt()
   @Min(1)
@@ -14,9 +14,5 @@ export class CreateDetalleVentaDto {
 
   @IsNumber()
   @Min(0)
-  precio_unitario: number;
-
-  @IsNumber()
-  @Min(0)
-  subtotal: number;
+  precioUnitario: number; //camelCase
 }

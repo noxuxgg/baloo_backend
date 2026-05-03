@@ -1,12 +1,13 @@
-import { IsInt, IsNumber, IsString, Min } from 'class-validator';
+import { IsInt, IsNumber, IsString, IsIn, Min } from 'class-validator';
 
 export class CreatePagoDto {
 
   @IsInt()
-  venta_id: number;
+  ventaId: number;                        // 👈 camelCase
 
   @IsString()
-  metodo: string; // efectivo, QR
+  @IsIn(['efectivo', 'QR'])               // 👈 solo acepta valores válidos
+  metodo: string;
 
   @IsNumber()
   @Min(0)

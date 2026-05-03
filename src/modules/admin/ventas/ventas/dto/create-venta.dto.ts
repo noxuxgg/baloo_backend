@@ -1,19 +1,9 @@
-import {
-  IsDateString,
-  IsInt,
-  IsArray,
-  ValidateNested,
-  IsNumber,
-  Min,
-  IsString
-} from 'class-validator';
+import { IsInt, IsArray, ValidateNested, IsNumber, IsString, IsIn, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
-// 🔹 DETALLE DTO
 class DetalleDto {
-
   @IsInt()
-  producto_id: number;
+  productoId: number;                         // camelCase
 
   @IsInt()
   @Min(1)
@@ -21,13 +11,12 @@ class DetalleDto {
 
   @IsNumber()
   @Min(0)
-  precio_unitario: number;
+  precioUnitario: number;                     //  camelCase
 }
 
-// 🔹 PAGO DTO
 class PagoDto {
-
   @IsString()
+  @IsIn(['efectivo', 'QR'])                   //  validación de valores
   metodo: string;
 
   @IsNumber()
@@ -35,17 +24,12 @@ class PagoDto {
   monto: number;
 }
 
-// 🔥 DTO PRINCIPAL
 export class CreateVentaDto {
-
-  @IsDateString()
-  fecha: string;
+  @IsInt()
+  usuarioId: number;                          // camelCase
 
   @IsInt()
-  usuario_id: number;
-
-  @IsInt()
-  sucursal_id: number;
+  sucursalId: number;                         //  camelCase
 
   @IsArray()
   @ValidateNested({ each: true })
