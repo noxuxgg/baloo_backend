@@ -10,7 +10,7 @@ export class DetalleTorta {
     @Column()
     color: string;
     @Column()
-    texto_torta: string;
+    textoTorta: string;
     @Column()
     decoracion: string;
     @Column()

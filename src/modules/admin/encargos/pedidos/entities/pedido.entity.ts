@@ -10,22 +10,22 @@ export class Pedido {
     id: number;
 
     @Column()
-    fecha_pedido: Date;
+    fechaPedido: Date;
 
     @Column()
-    fecha_entrega: Date;
+    fechaEntrega: Date;
 
     @Column()
-    hora_entrega: Date;
+    horaEntrega: string;
 
     @Column()
-    cantidad_personas: number;
+    cantidadPersonas: number;
 
     @Column()
     estado: string;
 
     @Column()
-    lugar_entrega: string;
+    lugarEntrega: string;
 
     @Column()
     total: number;
