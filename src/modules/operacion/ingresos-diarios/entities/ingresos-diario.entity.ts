@@ -3,7 +3,7 @@ import { Usuario } from "../../../admin/usuarios/entities/usuario.entity";
 import { Sucursal } from "../../../admin/sucursales/entities/sucursale.entity";
 import { Exclude } from "class-transformer";
 
-@Entity('ingresos_diarios')
+@Entity('ingresosDiarios')
 export class IngresosDiario {
     @PrimaryGeneratedColumn()
     id: number;
