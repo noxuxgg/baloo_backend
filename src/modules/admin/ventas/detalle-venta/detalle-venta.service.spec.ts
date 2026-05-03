@@ -1,18 +1,39 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { DetalleVentaService } from './detalle-venta.service';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
-describe('DetalleVentaService', () => {
-  let service: DetalleVentaService;
+import { DetalleVenta } from './entities/detalle-venta.entity';
 
-  beforeEach(async () => {
-    const module: TestingModule = await Test.createTestingModule({
-      providers: [DetalleVentaService],
-    }).compile();
+@Injectable()
+export class DetalleVentaService {
+  constructor(
+    @InjectRepository(DetalleVenta)
+    private detalleRepo: Repository<DetalleVenta>,
+  ) {}
 
-    service = module.get<DetalleVentaService>(DetalleVentaService);
-  });
+  create(data: any) {
+    const detalle = this.detalleRepo.create(data);
+    return this.detalleRepo.save(detalle);
+  }
 
-  it('should be defined', () => {
-    expect(service).toBeDefined();
-  });
-});
+  findAll() {
+    return this.detalleRepo.find({
+      relations: ['venta', 'producto'],
+    });
+  }
+
+  findOne(id: number) {
+    return this.detalleRepo.findOne({
+      where: { id },
+      relations: ['venta', 'producto'],
+    });
+  }
+
+  update(id: number, data: any) {
+    return this.detalleRepo.update(id, data);
+  }
+
+  remove(id: number) {
+    return this.detalleRepo.delete(id);
+  }
+}

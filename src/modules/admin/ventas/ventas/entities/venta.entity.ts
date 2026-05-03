@@ -1,6 +1,8 @@
-import { Entity, PrimaryGeneratedColumn, Column, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, OneToMany, ManyToOne, JoinColumn } from 'typeorm';
+
 import { DetalleVenta } from '../../detalle-venta/entities/detalle-venta.entity';
 import { Pago } from '../../pagos/entities/pago.entity';
+import { Sucursal } from '../../../sucursales/entities/sucursale.entity';
 
 @Entity('ventas')
 export class Venta {
@@ -20,11 +22,16 @@ export class Venta {
   @Column()
   sucursal_id: number;
 
-  // Relación con detalle_venta
+  // 🔗 relación con detalle_venta
   @OneToMany(() => DetalleVenta, (detalle) => detalle.venta)
   detalles: DetalleVenta[];
 
-  // Relación con pagos
+  // 🔗 relación con pagos
   @OneToMany(() => Pago, (pago) => pago.venta)
   pagos: Pago[];
+
+  // 🔥 relación con sucursal (IMPORTANTE)
+  @ManyToOne(() => Sucursal, (sucursal) => sucursal.ventas)
+  @JoinColumn({ name: 'sucursal_id' })
+  sucursal: Sucursal;
 }
