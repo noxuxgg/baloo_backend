@@ -3,6 +3,8 @@ import { Role } from "../../roles/entities/role.entity";
 import { Reporte } from "../../reportes/entities/reporte.entity";
 import { IngresosDiario } from "../../../operacion/ingresos-diarios/entities/ingresos-diario.entity";
 import { Gasto } from "../../../operacion/gastos/entities/gasto.entity";
+import { Pedido } from "../../encargos/pedidos/entities/pedido.entity";
+
 
 @Entity('usuarios')
 export class Usuario {
@@ -35,4 +37,9 @@ export class Usuario {
 
     @OneToMany(() => Gasto, (gasto) => gasto.usuario, {eager: true})
     gastos: Gasto[]
+
+    @OneToMany(() => Pedido, (pedido) => pedido.usuario, {eager: true})
+    pedidos: Pedido[]
+
+
 }
