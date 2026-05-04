@@ -12,24 +12,24 @@ import { Role } from '../roles/entities/role.entity';
 export class UsuariosService {
 
   constructor(
-    @InjectRepository(Usuario) 
+    @InjectRepository(Usuario)
     private usuarioRepository: Repository<Usuario>,
     @InjectRepository(Role)
     private rolRepository: Repository<Role>
-  ) {}
+  ) { }
 
   async create(createUsuarioDto: CreateUsuarioDto) {
     const { nombreUsuario, roleIds } = createUsuarioDto;
     // Verificando si existe el nombre de Usuario
-    const existeUsuario = await this.usuarioRepository.findOne({ where: { nombreUsuario: nombreUsuario } });
+    const existeUsuario = await this.usuarioRepository.findOne({ where: { nombreUsuario: nombreUsuario, estado: true } });
     if (existeUsuario) {
       throw new BadRequestException(`El nombre de usuario ${nombreUsuario} ya está en uso`);
     }
     // Roles
     let roles: Role[] = [];
-    if(roleIds?.length){
-      roles = await this.rolRepository.find({where: {id: In(roleIds)}});
-      if(roles.length !== roleIds.length){
+    if (roleIds?.length) {
+      roles = await this.rolRepository.find({ where: { id: In(roleIds) } });
+      if (roles.length !== roleIds.length) {
         throw new BadRequestException('Uno o más roles no son válidos');
       }
     }
@@ -53,7 +53,7 @@ export class UsuariosService {
   }
 
   async findOne(id: string) {
-    const usuario = await this.usuarioRepository.findOneBy({ id: id });
+    const usuario = await this.usuarioRepository.findOneBy({ id: id, estado: true });
     if (!usuario) {
       throw new NotFoundException(`El usuario con ID ${id} NO existe`);
     }
@@ -61,12 +61,22 @@ export class UsuariosService {
   }
 
   async update(id: string, updateUsuarioDto: UpdateUsuarioDto) {
-    const usuario = await this.findOne(id);
+    if (updateUsuarioDto.nombreUsuario) {
+      const usuarioOtro = await this.usuarioRepository.findOne({
+        where: {
+          nombreUsuario: updateUsuarioDto.nombreUsuario,
+          estado: true
+        }
+      });
 
-    if (updateUsuarioDto.roleIds) {
-      usuario.roles = updateUsuarioDto.roleIds.map(id => ({ id } as any));
+      if (usuarioOtro && usuarioOtro.id !== id) {
+        throw new BadRequestException(`El usuario ${updateUsuarioDto.nombreUsuario} ya está en uso`);
+      }
     }
-
+    const usuario = await this.findOne(id);
+    if (updateUsuarioDto.roleIds) {
+      usuario.roles = updateUsuarioDto.roleIds.map(rolId => ({ id: rolId } as any));
+    }
     Object.assign(usuario, updateUsuarioDto);
     if (updateUsuarioDto.contrasenia) {
       usuario.contrasenia = await bcrypt.hash(updateUsuarioDto.contrasenia, 12);
@@ -80,7 +90,7 @@ export class UsuariosService {
     const usuario = await this.findOne(id);
     usuario.estado = false;
     await this.usuarioRepository.save(usuario);
-    return {message: `El usuario ${usuario.nombreUsuario} ha sido deshabilitado`};
+    return { message: `El usuario ${usuario.nombreUsuario} ha sido deshabilitado` };
   }
 
   // Login
