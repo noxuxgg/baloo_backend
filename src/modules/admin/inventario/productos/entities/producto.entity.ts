@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, JoinColumn, Column, ManyToOne, OneToMany } from 'typeorm';
 import { Categoria } from '../../categorias/entities/categoria.entity';
 import { Stock } from '../../stock/entities/stock.entity';
 import { DetalleVenta } from '../../../ventas/detalle-venta/entities/detalle-venta.entity';
@@ -17,7 +17,13 @@ export class Producto {
   @Column({ default: true })
   estado: boolean;
 
+  // producto.entity.ts
+
+  @Column({ nullable: true })
+  categoriaId: number; // Esto crea la columna física en la DB
+
   @ManyToOne(() => Categoria, (categoria) => categoria.productos)
+  @JoinColumn({ name: 'categoriaId' }) // Enlaza la relación con la columna de arriba
   categoria: Categoria;
 
   @OneToMany(() => Stock, (stock) => stock.producto)

@@ -12,20 +12,19 @@ export class ProductosService {
     private readonly productoRepository: Repository<Producto>
   ) {}
 
+  // productos.service.ts
+
   async create(createProductoDto: CreateProductoDto) {
-    const { nombre } = createProductoDto;
+    const { categoriaId, ...datosProducto } = createProductoDto;
 
-    // 1. Validación de duplicados (siguiendo tu estándar de sucursales)
-    const existeProducto = await this.productoRepository.findOne({ where: { nombre } });
-    if (existeProducto) {
-      throw new BadRequestException(`El producto "${nombre}" ya existe en Baloo Pastelería`);
-    }
+    // Creamos la instancia del producto
+    const nuevoProducto = this.productoRepository.create({
+      ...datosProducto,
+      // Aquí está el truco: asignamos el ID a la propiedad de relación
+      categoria: { id: categoriaId } as any 
+    });
 
-    const nuevoProducto = this.productoRepository.create(createProductoDto);
-    const guardado = await this.productoRepository.save(nuevoProducto);
-  
-    // Retornamos el objeto completo con sus relaciones
-    return await this.findOne(guardado.id);
+    return await this.productoRepository.save(nuevoProducto);
   }
 
   async findAll() {
