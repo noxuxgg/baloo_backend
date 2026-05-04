@@ -13,7 +13,7 @@ export class Usuario {
     @PrimaryGeneratedColumn('uuid')
     id: string;
 
-    @Column({unique: true})
+    @Column()
     nombreUsuario: string;
 
     @Exclude({ toPlainOnly: true })
@@ -23,8 +23,7 @@ export class Usuario {
     @Column({default: true})
     estado: boolean;
 
-    @Exclude({ toPlainOnly: true })
-    @ManyToMany(() => Role,{eager: false})
+    @ManyToMany(() => Role,{eager: true})
     @JoinTable({
         name: 'usuarioRol',
         joinColumn: {name: 'usuarioId'},
@@ -32,20 +31,15 @@ export class Usuario {
     })
     roles: Role[];
 
-    
-    @Exclude({ toPlainOnly: true })
-    @OneToMany(() => Reporte, (reporte) => reporte.usuario, {eager: false})
+    @OneToMany(() => Reporte, (reporte) => reporte.usuario, {eager: true})
     reporte: Reporte[];
 
-    @Exclude({ toPlainOnly: true })
     @OneToMany(() => IngresosDiario, (ingreso) => ingreso.usuario, {eager: false})
     ingresos: IngresosDiario[];
 
-    @Exclude({ toPlainOnly: true })
-    @OneToMany(() => Gasto, (gasto) => gasto.usuario, {eager: false})
+    @OneToMany(() => Gasto, (gasto) => gasto.usuario, {eager: true})
     gastos: Gasto[];
 
-    @Exclude({ toPlainOnly: true })
-    @OneToMany(() => Pedido, (pedido) => pedido.usuario, {eager: false})
+    @OneToMany(() => Pedido, (pedido) => pedido.usuario, {eager: true})
     pedidos: Pedido[];
 }
