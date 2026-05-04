@@ -8,29 +8,20 @@ export class DetalleVenta {
   @PrimaryGeneratedColumn()
   id: number;
 
-  
-  // detalle-venta.entity.ts
-  @Column()
-  ventaId: number;          // 👈 camelCase
+  @ManyToOne(() => Venta, (venta) => venta.detalles)
+  @JoinColumn({ name: 'ventaId' })          // camelCase en BD
+  venta: Venta;
 
-  @Column()
-  productoId: number;       // 👈 camelCase
+  @ManyToOne(() => Producto, (producto) => producto.detalles)
+  @JoinColumn({ name: 'productoId' })       //  camelCase en BD
+  producto: Producto;
 
   @Column()
   cantidad: number;
 
-  @Column('decimal')
-  precioUnitario: number;   // 👈 camelCase
+  @Column({ name: 'precioUnitario' })       //  camelCase en BD
+  precioUnitario: number;
 
-  @Column('decimal')
+  @Column()
   subtotal: number;
-
-  @ManyToOne(() => Venta, (venta) => venta.detalles)
-  @JoinColumn({ name: 'venta_id' })  // 👈 nombre en BD sigue igual
-  venta: Venta;
-
-  @ManyToOne(() => Producto, (producto) => producto.detalles)
-  @JoinColumn({ name: 'producto_id' })
-  producto: Producto;
-  
 }
