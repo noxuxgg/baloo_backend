@@ -14,4 +14,7 @@ export class Categoria {
 
   @OneToMany(() => Producto, (producto) => producto.categoria)
   productos: Producto[];
+
+  @Column({ default: true }) // <--- Agrégala aquí
+  estado: boolean;
 }
