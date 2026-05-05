@@ -32,7 +32,9 @@ export class PedidosService {
   }
 
   async findAll() {
-    const pedidos = await this.pedidoRepository.find();
+    const pedidos = await this.pedidoRepository.find({
+      where: { estado: true }
+    });
     return pedidos;
   }
 

@@ -22,7 +22,7 @@ export class Pedido {
     cantidadPersonas: number;
 
     @Column()
-    estado: string;
+    estado: boolean;
 
     @Column()
     lugarEntrega: string;
