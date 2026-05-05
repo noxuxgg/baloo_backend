@@ -7,19 +7,19 @@ export class Pago {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
-  ventaId: number;                        // 👈 camelCase
-
-  @ManyToOne(() => Venta, (venta) => venta.pagos)
-  @JoinColumn({ name: 'venta_id' })       // 👈 BD sigue igual
-  venta: Venta;
+  @Column({ nullable: true })
+  ventaId: number;
 
   @Column()
-  metodo: string;                         // efectivo | QR
+  metodo: string;
 
-  @Column('decimal')
+  @Column('decimal', { precision: 10, scale: 2 })
   monto: number;
 
-  @CreateDateColumn()                     // 👈 se genera automático
+  @CreateDateColumn()
   fecha: Date;
+
+  @ManyToOne(() => Venta, (venta) => venta.pagos)
+  @JoinColumn({ name: 'ventaId' })            // 👈 camelCase en BD
+  venta: Venta;
 }

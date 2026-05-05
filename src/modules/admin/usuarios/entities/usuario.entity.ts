@@ -5,7 +5,7 @@ import { IngresosDiario } from "../../../operacion/ingresos-diarios/entities/ing
 import { Gasto } from "../../../operacion/gastos/entities/gasto.entity";
 import { Pedido } from "../../encargos/pedidos/entities/pedido.entity";
 import { Exclude } from "class-transformer";
-
+import { Venta } from "../../ventas/ventas/entities/venta.entity";
 
 @Entity('usuarios')
 export class Usuario {
@@ -42,4 +42,6 @@ export class Usuario {
 
     @OneToMany(() => Pedido, (pedido) => pedido.usuario, {eager: true})
     pedidos: Pedido[];
+    @OneToMany(() => Venta, (venta) => venta.usuario)  // agregar
+    ventas: Venta[];
 }

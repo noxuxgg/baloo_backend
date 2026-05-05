@@ -1,9 +1,9 @@
-import { IsInt, IsArray, ValidateNested, IsNumber, IsString, IsIn, Min } from 'class-validator';
+import { IsInt, IsArray, IsString, IsUUID, ValidateNested, IsNumber, IsIn, Min } from 'class-validator';
 import { Type } from 'class-transformer';
 
 class DetalleDto {
   @IsInt()
-  productoId: number;                         // camelCase
+  productoId: number;
 
   @IsInt()
   @Min(1)
@@ -11,12 +11,12 @@ class DetalleDto {
 
   @IsNumber()
   @Min(0)
-  precioUnitario: number;                     //  camelCase
+  precioUnitario: number;
 }
 
 class PagoDto {
   @IsString()
-  @IsIn(['efectivo', 'QR'])                   //  validación de valores
+  @IsIn(['efectivo', 'QR'])
   metodo: string;
 
   @IsNumber()
@@ -25,11 +25,11 @@ class PagoDto {
 }
 
 export class CreateVentaDto {
-  @IsInt()
-  usuarioId: number;                          // camelCase
+  @IsUUID()                                   // 👈 usuario usa uuid
+  usuarioId: string;                          // 👈 string
 
   @IsInt()
-  sucursalId: number;                         //  camelCase
+  sucursalId: number;
 
   @IsArray()
   @ValidateNested({ each: true })
