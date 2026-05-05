@@ -21,7 +21,7 @@ export class DetalleVentaService {
 
     // Validar venta
     const venta = await this.detalleRepo.manager.findOne(Venta, {
-      where: { id: data.ventaId },       // 👈 camelCase
+      where: { id: Number(data.ventaId) }      // 👈 camelCase
     });
 
     if (!venta) {
