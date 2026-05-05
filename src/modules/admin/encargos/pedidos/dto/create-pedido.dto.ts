@@ -37,10 +37,10 @@ export class CreatePedidoDto {
     @IsNotEmpty()
     cantidadPersonas: number;
 
-    @ApiProperty()
-    @IsString()
-    @IsNotEmpty()
-    estado: string;
+    @ApiProperty({ default: true })
+    @IsBoolean()
+    @IsOptional()
+    estado?: boolean;
 
     @ApiProperty()
     @IsString()
