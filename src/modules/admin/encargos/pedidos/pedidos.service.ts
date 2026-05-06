@@ -33,7 +33,8 @@ export class PedidosService {
 
   async findAll() {
     const pedidos = await this.pedidoRepository.find({
-      where: { estado: true }
+      where: { estado: true },
+      relations: ['cliente','usuario','sucursal'],
     });
     return pedidos;
   }
