@@ -82,18 +82,20 @@ export class StockService {
       }
     });
 
+    // 2. Validación de existencia (DEBE IR PRIMERO)
     if (!registro) {
-      throw new NotFoundException(`No se encontró stock para el producto en la sucursal seleccionada.`);
+      throw new NotFoundException(`No se encontró stock activo para el producto #${productoId} en la sucursal #${sucursalId}.`);
     }
 
-    // 2. Aplicamos la lógica de suma o resta
+    // 3. Calculamos el nuevo stock de forma segura usando la variable correcta
     const nuevoStock = registro.cantidad + cantidadModificada;
 
-    // 3. Validación de seguridad: No permitir stock negativo
+    // 4. Validación de seguridad: No permitir que el inventario baje de 0
     if (nuevoStock < 0) {
-      throw new BadRequestException('La operación resultaría en stock negativo. Verifique las unidades.');
+      throw new BadRequestException('La operación resultaría en stock negativo. Verifique las unidades disponibles.');
     }
 
+    // 5. Asignamos el nuevo valor calculado y guardamos en PostgreSQL
     registro.cantidad = nuevoStock;
     
     return await this.stockRepository.save(registro);

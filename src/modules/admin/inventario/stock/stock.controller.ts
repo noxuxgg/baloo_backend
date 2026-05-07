@@ -17,6 +17,19 @@ export class StockController {
     return this.stockService.findAll();
   }
 
+  // --- LAS RUTAS ESTÁTICAS EXPLICÍTAS SIEMPRE VAN ARRIBA ---
+  @Patch('actualizar-unidades')
+  async actualizarUnidades(
+    @Body() body: { productoId: number; sucursalId: number; cantidadModificada: number }
+  ) {
+    return await this.stockService.actualizarUnidades(
+      Number(body.productoId), 
+      Number(body.sucursalId), 
+      Number(body.cantidadModificada)
+    );
+  }
+
+  // --- LAS RUTAS CON PARÁMETROS DINÁMICOS (:id) VAN ABAJO ---
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.stockService.findOne(+id);
@@ -30,16 +43,5 @@ export class StockController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.stockService.remove(+id);
-  }
-
-  @Patch('actualizar-unidades')
-  async actualizarStock(
-    @Body() data: { productoId: number; sucursalId: number; cantidadModificada: number }
-  ) {
-    return await this.stockService.actualizarUnidades(
-      data.productoId, 
-      data.sucursalId, 
-      data.cantidadModificada
-    );
   }
 }
