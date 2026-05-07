@@ -23,7 +23,7 @@ import { EncargosModule } from './modules/admin/encargos/encargos.module';
       port: 5436,
       username: 'postgres',
       password: 'postgresql',
-      database: 'bdBaloo',
+      database: 'bdBaloo', 
       entities: [
         __dirname + '/../**/*.entity{.ts,.js}'
       ],
