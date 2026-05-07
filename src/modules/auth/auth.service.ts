@@ -2,7 +2,7 @@ import { HttpException, Injectable } from '@nestjs/common';
 import { UsuariosService } from '../admin/usuarios/usuarios.service';
 import { inicioSesionDto } from './dto/inicioSesion.dto';
 import { JwtService } from '@nestjs/jwt';
-import { hash, compare } from "bcrypt"
+import * as bcrypt from 'bcryptjs';
 
 @Injectable()
 export class AuthService {
@@ -21,7 +21,7 @@ export class AuthService {
         }
 
         // Para verificar la contrasenia (asignar la comparación con bcrypt)
-        const verificarContra = await compare(contrasenia, usuario.contrasenia);
+        const verificarContra = await bcrypt.compare(contrasenia, usuario.contrasenia);
         if(!verificarContra){
             throw new HttpException('Contraseña incorrecta', 401)
         }
