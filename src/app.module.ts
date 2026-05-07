@@ -17,18 +17,18 @@ import { EncargosModule } from './modules/admin/encargos/encargos.module';
 
 @Module({
   imports: [ConfigModule.forRoot(),
-  TypeOrmModule.forRoot({
-    type: 'postgres',
-    url: process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_WJTUQEBfVa37@ep-sparkling-bonus-ap6chxz3.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require',
-    entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-    synchronize: true,
-    ssl: true,
-    extra: {
-      ssl: {
-        rejectUnauthorized: false,
-      },
-    },
-  }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5436,
+      username: 'postgres',
+      password: 'postgresql',
+      database: 'bdBaloo',
+      entities: [
+        __dirname + '/../**/*.entity{.ts,.js}'
+      ],
+      synchronize: false
+    }),
     UsersModule,
     InventarioModule,
     UsuariosModule,
@@ -43,4 +43,4 @@ import { EncargosModule } from './modules/admin/encargos/encargos.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
