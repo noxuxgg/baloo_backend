@@ -17,18 +17,18 @@ import { EncargosModule } from './modules/admin/encargos/encargos.module';
 
 @Module({
   imports: [ConfigModule.forRoot(),
-  TypeOrmModule.forRoot({
-    type: 'postgres',
-    url: process.env.DATABASE_URL,
-    host: process.env.DATABASE_URL ? undefined : 'localhost',
-    port: process.env.DATABASE_URL ? undefined : 5436,
-    username: process.env.DATABASE_URL ? undefined : 'postgres',
-    password: process.env.DATABASE_URL ? undefined : 'postgresql',
-    database: process.env.DATABASE_URL ? undefined : 'bdBaloo',
-    entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-    synchronize: true,
-    ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
-  }),
+    TypeOrmModule.forRoot({
+      type: 'postgres',
+      host: 'localhost',
+      port: 5436,
+      username: 'postgres',
+      password: 'postgresql',
+      database: 'bdBaloo', 
+      entities: [
+        __dirname + '/../**/*.entity{.ts,.js}'
+      ],
+      synchronize: false
+    }),
     UsersModule,
     InventarioModule,
     UsuariosModule,
@@ -43,4 +43,4 @@ import { EncargosModule } from './modules/admin/encargos/encargos.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
