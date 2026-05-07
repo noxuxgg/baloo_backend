@@ -19,15 +19,15 @@ import { EncargosModule } from './modules/admin/encargos/encargos.module';
   imports: [ConfigModule.forRoot(),
   TypeOrmModule.forRoot({
     type: 'postgres',
-    url: process.env.DATABASE_URL,
-    host: process.env.DATABASE_URL ? undefined : 'localhost',
-    port: process.env.DATABASE_URL ? undefined : 5436,
-    username: process.env.DATABASE_URL ? undefined : 'postgres',
-    password: process.env.DATABASE_URL ? undefined : 'postgresql',
-    database: process.env.DATABASE_URL ? undefined : 'bdBaloo',
+    url: process.env.DATABASE_URL || 'postgresql://neondb_owner:npg_WJTUQEBfVa37@ep-sparkling-bonus-ap6chxz3.c-7.us-east-1.aws.neon.tech/neondb?sslmode=require',
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
     synchronize: true,
-    ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
+    ssl: true,
+    extra: {
+      ssl: {
+        rejectUnauthorized: false,
+      },
+    },
   }),
     UsersModule,
     InventarioModule,
