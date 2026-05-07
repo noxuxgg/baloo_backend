@@ -72,6 +72,35 @@ export class StockService {
     }
   }
 
+  async actualizarUnidades(productoId: number, sucursalId: number, cantidadModificada: number) {
+    // 1. Buscamos el registro específico para esa sucursal y producto
+    const registro = await this.stockRepository.findOne({
+      where: { 
+        productoId: productoId, 
+        sucursalId: sucursalId,
+        estado: true 
+      }
+    });
+
+    // 2. Validación de existencia (DEBE IR PRIMERO)
+    if (!registro) {
+      throw new NotFoundException(`No se encontró stock activo para el producto #${productoId} en la sucursal #${sucursalId}.`);
+    }
+
+    // 3. Calculamos el nuevo stock de forma segura usando la variable correcta
+    const nuevoStock = registro.cantidad + cantidadModificada;
+
+    // 4. Validación de seguridad: No permitir que el inventario baje de 0
+    if (nuevoStock < 0) {
+      throw new BadRequestException('La operación resultaría en stock negativo. Verifique las unidades disponibles.');
+    }
+
+    // 5. Asignamos el nuevo valor calculado y guardamos en PostgreSQL
+    registro.cantidad = nuevoStock;
+    
+    return await this.stockRepository.save(registro);
+  }
+
   async remove(id: number) {
     // 1. Buscamos y validamos existencia activa
     const registro = await this.findOne(id);
