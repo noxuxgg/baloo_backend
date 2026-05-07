@@ -72,6 +72,33 @@ export class StockService {
     }
   }
 
+  async actualizarUnidades(productoId: number, sucursalId: number, cantidadModificada: number) {
+    // 1. Buscamos el registro específico para esa sucursal y producto
+    const registro = await this.stockRepository.findOne({
+      where: { 
+        productoId: productoId, 
+        sucursalId: sucursalId,
+        estado: true 
+      }
+    });
+
+    if (!registro) {
+      throw new NotFoundException(`No se encontró stock para el producto en la sucursal seleccionada.`);
+    }
+
+    // 2. Aplicamos la lógica de suma o resta
+    const nuevoStock = registro.cantidad + cantidadModificada;
+
+    // 3. Validación de seguridad: No permitir stock negativo
+    if (nuevoStock < 0) {
+      throw new BadRequestException('La operación resultaría en stock negativo. Verifique las unidades.');
+    }
+
+    registro.cantidad = nuevoStock;
+    
+    return await this.stockRepository.save(registro);
+  }
+
   async remove(id: number) {
     // 1. Buscamos y validamos existencia activa
     const registro = await this.findOne(id);

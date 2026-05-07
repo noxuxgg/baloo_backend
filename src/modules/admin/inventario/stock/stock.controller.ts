@@ -31,4 +31,15 @@ export class StockController {
   remove(@Param('id') id: string) {
     return this.stockService.remove(+id);
   }
+
+  @Patch('actualizar-unidades')
+  async actualizarStock(
+    @Body() data: { productoId: number; sucursalId: number; cantidadModificada: number }
+  ) {
+    return await this.stockService.actualizarUnidades(
+      data.productoId, 
+      data.sucursalId, 
+      data.cantidadModificada
+    );
+  }
 }
