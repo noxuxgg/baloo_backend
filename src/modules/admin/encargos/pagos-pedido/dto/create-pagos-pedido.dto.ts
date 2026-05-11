@@ -1,5 +1,5 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsString, MinLength } from "class-validator";
+import { IsDateString, IsNotEmpty, IsNumber, IsOptional, IsPositive, IsString, Min, MinLength } from "class-validator";
 
 export class CreatePagosPedidoDto {
     @ApiProperty({ description: 'Id que proviene de Pedido' })
@@ -7,7 +7,7 @@ export class CreatePagosPedidoDto {
     @IsNotEmpty()
     pedidoId: number;
 
-    @ApiProperty()
+    @ApiProperty({ description: 'Efectivo, QR'})
     @IsString()
     @IsNotEmpty()
     metodo: string;
@@ -15,6 +15,8 @@ export class CreatePagosPedidoDto {
     @ApiProperty()
     @IsNumber()
     @IsNotEmpty()
+    @IsPositive({ message: 'El monto debe ser mayor a 0'})
+    @Min(1)
     monto: number;
 
     @ApiProperty()
