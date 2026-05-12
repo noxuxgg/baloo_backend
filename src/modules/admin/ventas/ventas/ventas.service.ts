@@ -20,24 +20,21 @@ export class VentasService {
 
     return await this.dataSource.transaction(async (manager) => {
 
-      // 1. Validar usuario
       const usuario = await manager.findOne(Usuario, {
         where: { id: data.usuarioId as any },
       });
       if (!usuario) throw new NotFoundException('El usuario no existe');
 
-      // 2. Validar sucursal
       const sucursal = await manager.findOne(Sucursal, {
         where: { id: data.sucursalId },
       });
       if (!sucursal) throw new NotFoundException('La sucursal no existe');
 
-      // 3. Validar stock de todos los productos ANTES de guardar nada
       for (const det of data.detalles) {
         const producto = await manager.findOne(Producto, {
           where: { id: det.productoId },
         });
-        if (!producto) 
+        if (!producto)
           throw new NotFoundException(`Producto ${det.productoId} no existe`);
 
         const stock = await manager.findOne(Stock, {
@@ -55,8 +52,7 @@ export class VentasService {
           );
       }
 
-      // 4. Guardar la venta
-      let total = data.detalles.reduce(
+      const total = data.detalles.reduce(
         (sum, det) => sum + det.cantidad * det.precioUnitario, 0
       );
 
@@ -64,12 +60,11 @@ export class VentasService {
         usuarioId: data.usuarioId,
         sucursalId: data.sucursalId,
         total,
+        estado: true, // 👈 siempre activa al crear
       });
       const ventaGuardada = await manager.save(venta);
 
-      // 5. Guardar detalles y descontar stock
       for (const det of data.detalles) {
-        // Guardar detalle
         await manager.save(manager.create(DetalleVenta, {
           ventaId: ventaGuardada.id,
           productoId: det.productoId,
@@ -78,7 +73,6 @@ export class VentasService {
           subtotal: det.cantidad * det.precioUnitario,
         }));
 
-        // Descontar stock
         const stock = await manager.findOne(Stock, {
           where: { productoId: det.productoId, sucursalId: data.sucursalId, estado: true },
         });
@@ -86,7 +80,6 @@ export class VentasService {
         stock!.cantidad -= det.cantidad;
         await manager.save(stock);
 
-        // Alerta si baja del mínimo
         if (stock!.cantidad <= stock!.stockMinimo) {
           const producto = await manager.findOne(Producto, { where: { id: det.productoId } });
           alertas.push(
@@ -95,7 +88,6 @@ export class VentasService {
         }
       }
 
-      // 6. Guardar pagos
       for (const p of data.pagos) {
         await manager.save(manager.create(Pago, {
           ventaId: ventaGuardada.id,
@@ -104,7 +96,6 @@ export class VentasService {
         }));
       }
 
-      // 7. Retornar venta + alertas
       const ventaCompleta = await manager.findOne(Venta, {
         where: { id: ventaGuardada.id },
         relations: ['detalles', 'pagos'],
@@ -114,15 +105,18 @@ export class VentasService {
     });
   }
 
+  // 👇 Solo listar ventas activas
   findAll() {
     return this.dataSource.getRepository(Venta).find({
+      where: { estado: true },
       relations: ['detalles', 'pagos'],
     });
   }
 
+  // 👇 Solo buscar ventas activas
   findOne(id: number) {
     return this.dataSource.getRepository(Venta).findOne({
-      where: { id },
+      where: { id, estado: true },
       relations: ['detalles', 'pagos'],
     });
   }
@@ -131,7 +125,33 @@ export class VentasService {
     return this.dataSource.getRepository(Venta).update(id, data);
   }
 
-  remove(id: number) {
-    return this.dataSource.getRepository(Venta).delete(id);
+  // 👇 Borrado lógico + devolver stock
+  async remove(id: number) {
+    return await this.dataSource.transaction(async (manager) => {
+
+      const venta = await manager.findOne(Venta, {
+        where: { id, estado: true },
+        relations: ['detalles'],
+      });
+
+      if (!venta) throw new NotFoundException(`Venta #${id} no encontrada o ya fue anulada`);
+
+      // Devolver stock de cada producto
+      for (const det of venta.detalles) {
+        const stock = await manager.findOne(Stock, {
+          where: { productoId: det.productoId, sucursalId: venta.sucursalId, estado: true },
+        });
+
+        if (stock) {
+          stock.cantidad += det.cantidad; // 👈 devolver stock
+          await manager.save(stock);
+        }
+      }
+
+      // Borrado lógico
+      await manager.update(Venta, id, { estado: false });
+
+      return { message: `Venta #${id} anulada correctamente` };
+    });
   }
 }
