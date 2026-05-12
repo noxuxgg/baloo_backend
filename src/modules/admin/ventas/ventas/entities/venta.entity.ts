@@ -17,17 +17,20 @@ export class Venta {
   total: number;
 
   @Column({ nullable: true })
-  usuarioId: string;                          // 👈 string por uuid
+  usuarioId: string;
 
   @Column({ nullable: true })
   sucursalId: number;
 
+  @Column({ default: true }) // 👈 agregado
+  estado: boolean;
+
   @ManyToOne(() => Usuario)
-  @JoinColumn({ name: 'usuarioId' })          // 👈 camelCase en BD
+  @JoinColumn({ name: 'usuarioId' })
   usuario: Usuario;
 
   @ManyToOne(() => Sucursal, (sucursal) => sucursal.ventas)
-  @JoinColumn({ name: 'sucursalId' })         // 👈 camelCase en BD
+  @JoinColumn({ name: 'sucursalId' })
   sucursal: Sucursal;
 
   @OneToMany(() => DetalleVenta, (detalle) => detalle.venta)
