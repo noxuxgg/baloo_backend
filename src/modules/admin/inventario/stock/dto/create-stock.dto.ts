@@ -10,7 +10,7 @@ export class CreateStockDto {
     @ApiProperty({ description: 'Stock mínimo para alertas' })
     @IsInt()
     @Min(0)
-    stockMinimo: number; // Agregado
+    stockMinimo: number;
 
     @ApiProperty({ description: 'Estado lógico del registro' })
     @IsBoolean()
@@ -19,7 +19,7 @@ export class CreateStockDto {
 
     @ApiProperty({ description: 'ID de la sucursal' })
     @IsNumber()
-    sucursalId: number; // Agregado
+    sucursalId: number;
 
     @ApiProperty({ description: 'ID del producto asociado' })
     @IsNumber()
