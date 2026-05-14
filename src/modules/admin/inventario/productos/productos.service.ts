@@ -8,64 +8,64 @@ import { UpdateProductoDto } from './dto/update-producto.dto';
 @Injectable()
 export class ProductosService {
   constructor(
-    @InjectRepository(Producto) 
-    private readonly productoRepository: Repository<Producto>
+    @InjectRepository(Producto)
+    private productoRepository: Repository<Producto>,
   ) {}
 
-  // productos.service.ts
-
   async create(createProductoDto: CreateProductoDto) {
-    const { categoriaId, ...datosProducto } = createProductoDto;
+    const { nombre, categoriaId, ...datosProducto } = createProductoDto;
+    const existeProducto = await this.productoRepository.findOne({ where: { nombre } });
 
-    // Creamos la instancia del producto
+    if (existeProducto) {
+      throw new BadRequestException(`El producto ${nombre} ya existe`);
+    }
+
     const nuevoProducto = this.productoRepository.create({
       ...datosProducto,
-      // Aquí está el truco: asignamos el ID a la propiedad de relación
-      categoria: { id: categoriaId } as any 
+      nombre,
+      categoria: { id: categoriaId } as any
     });
-
-    return await this.productoRepository.save(nuevoProducto);
+    
+    const producto = await this.productoRepository.save(nuevoProducto);
+    return producto;
   }
 
   async findAll() {
-    // Solo traemos los activos, tal cual lo haces en sucursales
-    return await this.productoRepository.find({ 
+    const productos = await this.productoRepository.find({
       where: { estado: true },
-      relations: ['categoria'] 
+      relations: ['categoria']
     });
+    return productos;
   }
 
   async findOne(id: number) {
-    // Filtramos por ID y por estado: true para mantener el estándar
     const producto = await this.productoRepository.findOne({
       where: { id: id, estado: true },
       relations: ['categoria']
     });
 
     if (!producto) {
-      throw new NotFoundException(`El Producto con ID ${id} NO existe o está deshabilitado`);
+      throw new NotFoundException(`El Producto con ID ${id} NO existe`);
     }
     return producto;
   }
-  
-  async update(id: number, updateProductoDto: UpdateProductoDto) {
-    // Reutilizamos findOne para validar existencia y estado activo
-    const producto = await this.findOne(id);
 
-    // Fusionamos los cambios (incluyendo categoriaId si viene en el DTO)
+  async update(id: number, updateProductoDto: UpdateProductoDto) {
+    const producto = await this.productoRepository.findOneBy({ id: id });
+
+    if (!producto) {
+      throw new NotFoundException(`El producto con ID ${id} no existe`);
+    }
+
     Object.assign(producto, updateProductoDto);
-    
-    return await this.productoRepository.save(producto);
+    const productoActualizado = await this.productoRepository.save(producto);
+    return productoActualizado;
   }
 
   async remove(id: number) {
-    // 1. Buscamos y validamos (si ya está en false, findOne lanzará la excepción)
     const producto = await this.findOne(id);
-    
-    // 2. Borrado Lógico
-    producto.estado = false; 
+    producto.estado = false;
     await this.productoRepository.save(producto);
-    
-    return { message: `El producto "${producto.nombre}" ha sido deshabilitado correctamente` };
+    return { message: `El producto ${producto.nombre} ha sido deshabilitado` };
   }
 }

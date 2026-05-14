@@ -14,43 +14,51 @@ export class CategoriasService {
 
   async create(createCategoriaDto: CreateCategoriaDto) {
     const { nombre } = createCategoriaDto;
-    const existe = await this.categoriaRepository.findOne({ where: { nombre } });
-    if (existe) throw new BadRequestException(`La categoría ${nombre} ya existe`);
-
+    const existeCategoria = await this.categoriaRepository.findOne({ where: { nombre } });
+    
+    if (existeCategoria) {
+      throw new BadRequestException(`La categoría ${nombre} ya existe`);
+    }
+    
     const nuevaCategoria = this.categoriaRepository.create(createCategoriaDto);
-    return await this.categoriaRepository.save(nuevaCategoria);
-  }
-  
-  async update(id: number, updateCategoriaDto: UpdateCategoriaDto) {
-    const categoria = await this.findOne(id);
-    // Fusionamos los cambios del DTO con la entidad existente
-    Object.assign(categoria, updateCategoriaDto);
-    return await this.categoriaRepository.save(categoria);
+    const categoria = await this.categoriaRepository.save(nuevaCategoria);
+    return categoria;
   }
 
   async findAll() {
-    // Siguiendo tu estándar de sucursales:
-    return await this.categoriaRepository.find({ 
-    where: { estado: true }, 
-      relations: ['productos'] 
+    const categorias = await this.categoriaRepository.find({ 
+      where: { estado: true },
+      relations: ['productos']
     });
+    return categorias;
   }
 
   async findOne(id: number) {
-    // Validamos ID y estado activo
     const categoria = await this.categoriaRepository.findOne({ 
-      where: { id, estado: true },
+      where: { id: id, estado: true },
       relations: ['productos']
     });
-      
+
     if (!categoria) {
-      throw new NotFoundException(`La Categoría con ID ${id} NO existe o está deshabilitada`);
+      throw new NotFoundException(`La Categoría con ID ${id} NO existe`);
     }
     return categoria;
   }
 
+  async update(id: number, updateCategoriaDto: UpdateCategoriaDto) {
+    const categoria = await this.categoriaRepository.findOneBy({ id: id });
+    
+    if (!categoria) {
+      throw new NotFoundException(`La categoría con ID ${id} no existe`);
+    }
+
+    Object.assign(categoria, updateCategoriaDto);
+    const categoriaActualizada = await this.categoriaRepository.save(categoria);
+    return categoriaActualizada;
+  }
+
   async remove(id: number) {
-    const categoria = await this.findOne(id); // Reutiliza la validación
+    const categoria = await this.findOne(id);
     categoria.estado = false;
     await this.categoriaRepository.save(categoria);
     return { message: `La categoría ${categoria.nombre} ha sido deshabilitada` };

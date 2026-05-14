@@ -1,28 +1,32 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsNumber, IsInt, Min, IsBoolean, IsOptional } from "class-validator";
+import { IsBoolean, IsInt, IsNotEmpty, IsNumber, IsOptional, Min } from "class-validator";
 
 export class CreateStockDto {
-    @ApiProperty({ description: 'Cantidad física en inventario' })
+
+    @ApiProperty()
+    @IsNotEmpty()
     @IsInt()
     @Min(0)
     cantidad: number;
 
-    @ApiProperty({ description: 'Stock mínimo para alertas' })
+    @ApiProperty()
+    @IsNotEmpty()
     @IsInt()
     @Min(0)
     stockMinimo: number;
 
-    @ApiProperty({ description: 'Estado lógico del registro' })
-    @IsBoolean()
+    @ApiProperty()
     @IsOptional()
-    estado: boolean;
+    @IsBoolean()
+    estado?: boolean;
 
-    @ApiProperty({ description: 'ID de la sucursal' })
+    @ApiProperty()
+    @IsNotEmpty()
     @IsNumber()
     sucursalId: number;
 
-    @ApiProperty({ description: 'ID del producto asociado' })
+    @ApiProperty()
+    @IsNotEmpty()
     @IsNumber()
     productoId: number;
-
 }
