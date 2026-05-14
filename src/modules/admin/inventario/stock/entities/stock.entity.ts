@@ -13,15 +13,14 @@ export class Stock {
   @Column()
   stockMinimo: number;
 
-  // Definimos la columna explícitamente para que coincida con tu JSON
   @Column()
   productoId: number; 
 
-  @Column({ default: true }) // <--- Agrégala aquí
+  @Column({ default: true })
   estado: boolean;
 
   @ManyToOne(() => Producto, (producto) => producto.stocks, { eager: true })
-  @JoinColumn({ name: 'productoId' }) // Esto asegura que use este nombre
+  @JoinColumn({ name: 'productoId' })
   producto: Producto;
 
   @Column()
