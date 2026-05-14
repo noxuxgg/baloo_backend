@@ -35,7 +35,7 @@ export class StockService {
   async findAll() {
     const stocks = await this.stockRepository.find({
       where: { estado: true },
-      relations: ['producto', 'sucursal'],
+      relations: ['producto', 'producto.categoria', 'sucursal'],
     });
     return stocks;
   }
