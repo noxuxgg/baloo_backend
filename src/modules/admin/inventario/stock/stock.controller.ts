@@ -18,13 +18,13 @@ export class StockController {
   }
 
   @Patch('actualizar-unidades')
-  async actualizarUnidades(
+  actualizarUnidades(
     @Body() body: { productoId: number; sucursalId: number; cantidad: number }
   ) {
-    return await this.stockService.actualizarUnidades(
-      Number(body.productoId), 
-      Number(body.sucursalId), 
-      Number(body.cantidad)
+    return this.stockService.actualizarUnidades(
+      body.productoId,
+      body.sucursalId,
+      body.cantidad
     );
   }
 

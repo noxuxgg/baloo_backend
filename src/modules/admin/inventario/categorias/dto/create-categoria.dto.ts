@@ -1,21 +1,21 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, MinLength, MaxLength, IsOptional, IsBoolean } from "class-validator";
+import { IsBoolean, IsNotEmpty, IsOptional, MaxLength, MinLength } from "class-validator";
 
 export class CreateCategoriaDto {
-    @ApiProperty({ description: 'Nombre de la categoría (ej. Tortas, Galletas)' })
-    @IsString()
+
+    @ApiProperty()
+    @IsNotEmpty()
     @MinLength(3)
     @MaxLength(50)
     nombre: string;
 
-    @ApiProperty({ description: 'Breve descripción de la categoría', required: false })
-    @IsString()
+    @ApiProperty()
     @IsOptional()
     @MaxLength(255)
     descripcion?: string;
 
-    @ApiProperty({ description: 'Estado lógico del registro' })
-    @IsBoolean()
+    @ApiProperty()
     @IsOptional()
-    estado: boolean;
+    @IsBoolean()
+    estado?: boolean; 
 }
