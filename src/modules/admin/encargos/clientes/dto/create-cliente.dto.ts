@@ -1,7 +1,22 @@
-import { ApiProperty } from "@nestjs/swagger";
-import { IsBoolean, IsNotEmpty, IsOptional, IsString, Matches, MaxLength, MinLength } from "class-validator";
+import { ApiProperty, ApiTags } from "@nestjs/swagger";
+import { IsBoolean, IsInt, IsNotEmpty, IsOptional, IsString, Matches, Max, MaxLength, Min, MinLength } from "class-validator";
 
 export class CreateClienteDto {
+    @ApiProperty()
+    @IsInt()
+    @Min(10000)
+    @Max(9999999999)
+    carnet: number;
+
+    @ApiProperty({required: false})
+    @IsString()
+    @IsOptional()
+    @MaxLength(2)
+    @Matches(/^[0-9A-ZÑa-zñ]{1,2}$/, {
+        message:'El complemento solo debe contener letras o números de hasta 2 caracteres y sin espacios'
+    })
+    complemento: string;
+
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
@@ -22,6 +37,7 @@ export class CreateClienteDto {
     })
     apellido: string;
 
+    @ApiProperty()
     @IsString()
     @IsNotEmpty()
     @MinLength(7)
