@@ -30,6 +30,9 @@ import { EncargosModule } from './modules/admin/encargos/encargos.module';
     entities: [__dirname + '/../**/*.entity{.ts,.js}'],
     ssl: process.env.DATABASE_URL ? { rejectUnauthorized: false } : false,
     synchronize: true,
+    extra: {
+      options: '-c timezone=America/La_Paz'
+    }
   }),
     UsersModule,
     InventarioModule,
