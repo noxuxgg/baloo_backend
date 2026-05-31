@@ -5,6 +5,10 @@ export class Cliente {
     @PrimaryGeneratedColumn()
     id: number;
     @Column()
+    carnet: number;
+    @Column({nullable: true})
+    complemento: string;
+    @Column()
     nombre: string;
     @Column()
     apellido: string;

@@ -12,18 +12,20 @@ export class ClientesService {
     private readonly clienteRepository: Repository<Cliente>,
   ) { }
   async create(createClienteDto: CreateClienteDto) {
-    const { nombre, apellido, telefono, estado } = createClienteDto;
-    const existe = await this.clienteRepository.findOneBy({telefono: telefono});
+    const { carnet, complemento, nombre, apellido, telefono, estado } = createClienteDto;
+    const existe = await this.clienteRepository.findOneBy({carnet: carnet});
     if(existe){
-      throw new BadRequestException(`El cliente con telefono ${telefono} ya existe`);
+      throw new BadRequestException(`El cliente con carnet ${carnet} ya existe`);
     }
     const cliente = await this.clienteRepository.create({
+      carnet: carnet,
+      complemento: complemento,
       nombre: nombre,
       apellido: apellido,
       telefono: telefono,
       estado: estado
     })
-    const cliente1 = this.clienteRepository.save(cliente);
+    const cliente1 = await this.clienteRepository.save(cliente);
     return cliente1;
   }
 
@@ -53,10 +55,10 @@ export class ClientesService {
     if(!cliente){
       throw new NotFoundException(`Cliente no encontrado con el id ${id}`);
     }
-    if(updateClienteDto.telefono){
-      const existe = await this.clienteRepository.findOneBy({telefono: updateClienteDto.telefono});
+    if(updateClienteDto.carnet){
+      const existe = await this.clienteRepository.findOneBy({carnet: updateClienteDto.carnet});
       if(existe && existe.id !== id){
-        throw new NotFoundException(`El cliente con telefono ${updateClienteDto.telefono} ya esta registrado`);
+        throw new NotFoundException(`El cliente con carnet ${updateClienteDto.carnet} ya esta registrado`);
       }
     }
     Object.assign(cliente, updateClienteDto);
