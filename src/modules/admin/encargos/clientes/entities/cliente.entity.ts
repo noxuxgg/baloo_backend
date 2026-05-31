@@ -4,7 +4,7 @@ import { Pedido } from "../../pedidos/entities/pedido.entity";
 export class Cliente {
     @PrimaryGeneratedColumn()
     id: number;
-    @Column()
+    @Column({default: 0})
     carnet: number;
     @Column({nullable: true})
     complemento: string;
