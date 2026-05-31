@@ -12,7 +12,7 @@ export class CreateClienteDto {
     @IsString()
     @IsOptional()
     @MaxLength(2)
-    @Matches(/^[0-9A-ZÑa-zñ]{1,2}$/, {
+    @Matches(/^[0-9A-ZÑa-zñ]{0,2}$/, {
         message:'El complemento solo debe contener letras o números de hasta 2 caracteres y sin espacios'
     })
     complemento: string;
