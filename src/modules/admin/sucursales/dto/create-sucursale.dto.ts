@@ -5,19 +5,19 @@ export class CreateSucursaleDto {
 
     @ApiProperty()
     @IsNotEmpty()
-    @MinLength(2)
+    @MinLength(6)
     @MaxLength(20)
     nombre: string;
 
     @ApiProperty()
     @IsNotEmpty()
-    @MinLength(5)
-    @MaxLength(50)
+    @MinLength(10)
+    @MaxLength(30)
     direccion: string;
     
     @ApiProperty()
     @IsOptional()
-    @MinLength(5)
-    @MaxLength(10)
+    @MinLength(8)
+    @MaxLength(8)
     telefono?: string;
 }
