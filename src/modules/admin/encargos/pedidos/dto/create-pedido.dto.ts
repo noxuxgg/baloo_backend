@@ -44,6 +44,18 @@ export class CreatePedidoDto {
     @IsOptional()
     estado?: boolean;
 
+    @ApiProperty({ description: 'Estado de entrega: 1=Pendiente, 2=Entregado, 3=En preparación, 4=Anulado', default: 1 })
+    @IsNumber()
+    @Min(1)
+    @IsNotEmpty()
+    estadoEntrega: number;
+
+    @ApiProperty({ description: 'Estado del pago: 1=Pendiente (Sin adelanto), 2=Pago Parcial (Con adelanto), 3=Pago Completo', default: 1 })
+    @IsNumber()
+    @Min(1)
+    @IsNotEmpty()
+    estadoPago: number;
+
     @ApiProperty()
     @IsString()
     @IsNotEmpty()
