@@ -25,8 +25,8 @@ class PagoDto {
 }
 
 export class CreateVentaDto {
-  @IsUUID()                                   // 👈 usuario usa uuid
-  usuarioId: string;                          // 👈 string
+  @IsUUID()                                   
+  usuarioId: string;                          
 
   @IsInt()
   sucursalId: number;

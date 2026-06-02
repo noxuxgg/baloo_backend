@@ -3,10 +3,10 @@ import { IsInt, IsNumber, IsString, IsIn, Min } from 'class-validator';
 export class CreatePagoDto {
 
   @IsInt()
-  ventaId: number;                        // 👈 camelCase
+  ventaId: number;                        
 
   @IsString()
-  @IsIn(['efectivo', 'QR'])               // 👈 solo acepta valores válidos
+  @IsIn(['efectivo', 'QR'])            
   metodo: string;
 
   @IsNumber()

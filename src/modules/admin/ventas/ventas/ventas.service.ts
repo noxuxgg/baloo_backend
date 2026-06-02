@@ -60,7 +60,7 @@ export class VentasService {
         usuarioId: data.usuarioId,
         sucursalId: data.sucursalId,
         total,
-        estado: true, // 👈 siempre activa al crear
+        estado: true,
       });
       const ventaGuardada = await manager.save(venta);
 
@@ -105,7 +105,6 @@ export class VentasService {
     });
   }
 
-  // 👇 Solo listar ventas activas
   findAll() {
     return this.dataSource.getRepository(Venta).find({
       where: { estado: true },
@@ -113,7 +112,6 @@ export class VentasService {
     });
   }
 
-  // 👇 Solo buscar ventas activas
   findOne(id: number) {
     return this.dataSource.getRepository(Venta).findOne({
       where: { id, estado: true },
@@ -125,7 +123,6 @@ export class VentasService {
     return this.dataSource.getRepository(Venta).update(id, data);
   }
 
-  // 👇 Borrado lógico + devolver stock
   async remove(id: number) {
     return await this.dataSource.transaction(async (manager) => {
 
@@ -136,19 +133,17 @@ export class VentasService {
 
       if (!venta) throw new NotFoundException(`Venta #${id} no encontrada o ya fue anulada`);
 
-      // Devolver stock de cada producto
       for (const det of venta.detalles) {
         const stock = await manager.findOne(Stock, {
           where: { productoId: det.productoId, sucursalId: venta.sucursalId, estado: true },
         });
 
         if (stock) {
-          stock.cantidad += det.cantidad; // 👈 devolver stock
+          stock.cantidad += det.cantidad; 
           await manager.save(stock);
         }
       }
 
-      // Borrado lógico
       await manager.update(Venta, id, { estado: false });
 
       return { message: `Venta #${id} anulada correctamente` };
