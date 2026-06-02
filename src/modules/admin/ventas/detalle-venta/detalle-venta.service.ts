@@ -16,12 +16,11 @@ export class DetalleVentaService {
     private detalleRepo: Repository<DetalleVenta>,
   ) {}
 
-  // CREATE
   async create(data: CreateDetalleVentaDto) {
 
     // Validar venta
     const venta = await this.detalleRepo.manager.findOne(Venta, {
-      where: { id: Number(data.ventaId) }      // 👈 camelCase
+      where: { id: Number(data.ventaId) }     
     });
 
     if (!venta) {
@@ -30,7 +29,7 @@ export class DetalleVentaService {
 
     // Validar producto
     const producto = await this.detalleRepo.manager.findOne(Producto, {
-      where: { id: data.productoId },    // 👈 camelCase
+      where: { id: data.productoId },    
     });
 
     if (!producto) {
@@ -41,21 +40,19 @@ export class DetalleVentaService {
       venta,
       producto,
       cantidad: data.cantidad,
-      precioUnitario: data.precioUnitario,                    // 👈 camelCase
-      subtotal: data.cantidad * data.precioUnitario,          // 👈 camelCase
+      precioUnitario: data.precioUnitario,                    
+      subtotal: data.cantidad * data.precioUnitario,          
     });
 
     return this.detalleRepo.save(detalle);
   }
 
-  // GET ALL
   findAll() {
     return this.detalleRepo.find({
       relations: ['venta', 'producto'],
     });
   }
 
-  // GET ONE
   findOne(id: number) {
     return this.detalleRepo.findOne({
       where: { id },
@@ -63,12 +60,10 @@ export class DetalleVentaService {
     });
   }
 
-  // UPDATE
   update(id: number, data: UpdateDetalleVentaDto) {
     return this.detalleRepo.update(id, data);
   }
 
-  // DELETE
   remove(id: number) {
     return this.detalleRepo.delete(id);
   }

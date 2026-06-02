@@ -15,11 +15,10 @@ export class PagosService {
     private pagoRepo: Repository<Pago>,
   ) {}
 
-  // CREATE
   async create(data: CreatePagoDto) {
 
     const venta = await this.pagoRepo.manager.findOne(Venta, {
-      where: { id: data.ventaId },        // 👈 camelCase
+      where: { id: data.ventaId },        
     });
 
     if (!venta) {
@@ -27,23 +26,20 @@ export class PagosService {
     }
 
     const pago = this.pagoRepo.create({
-      venta,                              // 👈 shorthand
+      venta,                              
       metodo: data.metodo,
       monto: data.monto,
-      // fecha se genera sola con @CreateDateColumn
     });
 
     return this.pagoRepo.save(pago);
   }
 
-  // GET ALL
   findAll() {
     return this.pagoRepo.find({
       relations: ['venta'],
     });
   }
 
-  // GET ONE
   findOne(id: number) {
     return this.pagoRepo.findOne({
       where: { id },
@@ -51,12 +47,10 @@ export class PagosService {
     });
   }
 
-  // UPDATE
   update(id: number, data: UpdatePagoDto) {
     return this.pagoRepo.update(id, data);
   }
 
-  // DELETE
   remove(id: number) {
     return this.pagoRepo.delete(id);
   }

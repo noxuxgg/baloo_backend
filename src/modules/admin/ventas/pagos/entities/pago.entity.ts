@@ -20,6 +20,6 @@ export class Pago {
   fecha: Date;
 
   @ManyToOne(() => Venta, (venta) => venta.pagos)
-  @JoinColumn({ name: 'ventaId' })            // 👈 camelCase en BD
+  @JoinColumn({ name: 'ventaId' })            
   venta: Venta;
 }

@@ -3,10 +3,10 @@ import { IsInt, IsNumber, Min } from 'class-validator';
 
 export class CreateDetalleVentaDto {
   @IsInt()
-  ventaId: number;        // camelCase
+  ventaId: number;        
 
   @IsInt()
-  productoId: number;     // camelCase
+  productoId: number;     
 
   @IsInt()
   @Min(1)
@@ -14,5 +14,5 @@ export class CreateDetalleVentaDto {
 
   @IsNumber()
   @Min(0)
-  precioUnitario: number; //camelCase
+  precioUnitario: number; 
 }
