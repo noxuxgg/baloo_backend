@@ -24,6 +24,12 @@ export class Pedido {
     @Column()
     estado: boolean;
 
+    @Column({ type: 'int', default: 1,nullable: true })
+    estadoEntrega: number;
+
+    @Column({ type: 'int', default: 1,nullable: true })
+    estadoPago: number;
+
     @Column()
     lugarEntrega: string;
 

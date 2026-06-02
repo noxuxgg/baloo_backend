@@ -11,7 +11,7 @@ export class PedidosService {
     private readonly pedidoRepository: Repository<Pedido>,
   ) { }
   async create(createPedidoDto: CreatePedidoDto) {
-    const { clienteId, usuarioId, sucursalId, fechaPedido, fechaEntrega, horaEntrega, cantidadPersonas, estado, lugarEntrega, total, adelanto, saldo, observaciones } = createPedidoDto;
+    const { clienteId, usuarioId, sucursalId, fechaPedido, fechaEntrega, horaEntrega, cantidadPersonas, estado, estadoEntrega, estadoPago, lugarEntrega, total, adelanto, saldo, observaciones } = createPedidoDto;
     const pedido = this.pedidoRepository.create({
       cliente: {id: clienteId} as any,
       usuario: {id: usuarioId} as any,
@@ -21,6 +21,8 @@ export class PedidosService {
       horaEntrega: horaEntrega,
       cantidadPersonas: cantidadPersonas,
       estado: estado,
+      estadoEntrega: estadoEntrega,
+      estadoPago: estadoPago,
       lugarEntrega: lugarEntrega,
       total: total,
       adelanto: adelanto,
